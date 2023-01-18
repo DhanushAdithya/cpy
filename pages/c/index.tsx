@@ -1,21 +1,40 @@
-import type { NextPage } from 'next';
-import Layout from '../../components/Layout';
+import { Protected } from "@components";
+import { motion } from "framer-motion";
+import type { NextPage } from "next";
+import { useState } from "react";
+import { MoreHorizontal } from "react-feather";
+import Layout from "../../components/Layout";
 
 const CpyIndex: NextPage = () => {
-    return (
-        <Layout>
-            <p className='text-lg'>
-                Lorem ipsum dolor sit amet, officia excepteur ex fugiat reprehenderit enim labore culpa sint ad nisi
-                Lorem pariatur mollit ex esse exercitation amet. Nisi anim cupidatat excepteur officia. 
-                Reprehenderit nostrud nostrud ipsum Lorem est aliquip amet 
-                voluptate voluptate dolor minim nulla est proident. Nostrud officia pariatur ut officia. Sit irure elit esse 
-                ea nulla sunt ex occaecat reprehenderit commodo officia dolor Lorem duis laboris cupidatat officia voluptate. Culpa proident
-                adipisicing id nulla nisi laboris ex in Lorem sunt duis officia eiusmod. Aliqua reprehenderit commodo ex 
-                non excepteur duis import from "mod
-                ule"; velit enim. Voluptate laboris sint cupidatat ullamco ut ea consectetur et est culpa et culpa duis.
-            </p>
-        </Layout>
-    )
-}
+	const [toggle, setToggle] = useState(false);
+	const variants = {
+		move: {
+			x: 100,
+		},
+		none: {
+			x: 0,
+		},
+	};
+	return (
+		<Protected>
+			<Layout>
+				<div>
+					<motion.div
+						animate={toggle ? "move" : "none"}
+						variants={variants}
+						className="w-96 flex items-center rounded-md p-2 bg-gray-700 cursor-pointer"
+					>
+						<motion.button
+							className="p-4 bg-gray-600 rounded-md transition hover:bg-gray-800"
+							onClick={() => setToggle(toggle => !toggle)}
+						>
+							<MoreHorizontal size={18} />
+						</motion.button>
+					</motion.div>
+				</div>
+			</Layout>
+		</Protected>
+	);
+};
 
 export default CpyIndex;
