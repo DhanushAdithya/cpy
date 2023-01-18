@@ -1,0 +1,16 @@
+<svg className='hemlo' xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 800 450" opacity="0.95">
+    <defs>
+        <filter id="bbblurry-filter" x="-100%" y="-100%" width="400%" height="400%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+            <feGaussianBlur stdDeviation="81" x="0%" y="0%" width="100%" height="100%" in="SourceGraphic" edgeMode="none" result="blur">
+            </feGaussianBlur>
+        </filter>
+    </defs>
+    <g filter="url(#bbblurry-filter)">
+        <ellipse rx="120" ry="154" cx="629.998317458701" cy="340.8106716349284" fill="hsla(185, 89%, 56%, 1.00)">
+        </ellipse>
+        <ellipse rx="120" ry="154" cx="269.7388533764374" cy="69.12310714449926" fill="hsla(286, 52%, 74%, 1.00)">
+        </ellipse>
+        <ellipse rx="120" ry="154" cx="136.6380294915375" cy="459.2548547312056" fill="hsla(115, 63%, 69%, 1.00)">
+        </ellipse>
+    </g>
+</svg>

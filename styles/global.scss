@@ -1,20 +1,51 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+body {
+	background: url("../assests/bg.svg");
+	background-repeat: no-repeat;
+	background-size: fill;
+	background-position: 35% 10%;
+
+	@apply bg-[#e5fae6];
+	@apply transition duration-200;
+	// @apply bg-white;
+	@apply dark:bg-[#1a0634];
+}
+
+.primary-form {
+	@apply flex flex-col;
+	@apply justify-center items-center;
+	@apply space-y-9;
+
+	input {
+		@apply px-4 py-2;
+		@apply outline-none;
+	}
+}
+
+.landing-nav {
+	height: 110px;
+	padding: 0 40px;
+}
+
 .divider {
-    @apply w-full h-0.5 my-2 bg-neutral-500 rounded-full;
+	@apply w-full h-0.5 my-2 bg-neutral-500 rounded-full;
 }
 
 .sidebar-item {
-    @apply block w-12 h-12 rounded-full p-2;
-    @apply even:my-1 transition flex justify-center items-center;
+	@apply block w-12 h-12 rounded-full p-2;
+	@apply even:my-1 transition flex justify-center items-center;
 }
 
 .sidebar-item:hover {
-    @apply bg-neutral-300;
+	@apply bg-neutral-300;
 }
 
 .icon {
-    @apply block;
+	@apply block;
 }
