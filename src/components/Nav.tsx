@@ -1,4 +1,4 @@
-import { useAuth } from "@context";
+import { useAuth } from "~/context";
 import Link from "next/link";
 
 type Props = {

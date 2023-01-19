@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { Layout } from "@components";
+import { Layout } from "~/components";
 
 const Cpy: NextPage = () => {
 	const router = useRouter();

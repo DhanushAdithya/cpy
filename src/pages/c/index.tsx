@@ -1,9 +1,9 @@
-import { Protected } from "@components";
+import { Protected } from "~/components";
 import { motion } from "framer-motion";
 import type { NextPage } from "next";
 import { useState } from "react";
 import { MoreHorizontal } from "react-feather";
-import Layout from "../../components/Layout";
+import Layout from "~/components/Layout";
 
 const CpyIndex: NextPage = () => {
 	const [toggle, setToggle] = useState(false);

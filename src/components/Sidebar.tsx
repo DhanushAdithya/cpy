@@ -1,4 +1,4 @@
-import { useAuth } from "context";
+import { useAuth } from "~/context";
 import { motion } from "framer-motion";
 import { MouseEvent, useState } from "react";
 import {
@@ -10,6 +10,7 @@ import {
 	Settings,
 	LogOut,
 	Icon,
+	Plus,
 } from "react-feather";
 import ThemeToggle from "./ThemeToggle";
 
@@ -58,6 +59,12 @@ const Sidebar = () => {
 
 	return (
 		<div className="w-[260px] dark:bg-[#220845] flex flex-col gap-4 bg-[#E5FAe6] h-screen p-4">
+			<motion.button
+				whileTap={{ scale: 0.97 }}
+				className="w-12 h-12 justify-center flex items-center rounded-full dark:bg-[#220845] hover:dark:bg-[#2b0d52]"
+			>
+				<Plus size={18} className="mr-2" />
+			</motion.button>
 			<div className="flex flex-col gap-2">
 				<Item text="All" Icon={Folder} />
 				<Item text="Archive" Icon={Archive} />

@@ -1,10 +1,11 @@
-import type { AppProps } from "next/app";
+import type { AppProps, AppType } from "next/app";
 import { AnimatePresence } from "framer-motion";
-import { AuthContextProvider } from "../context/AuthContext";
+import { AuthContextProvider } from "~/context";
 import { ThemeProvider } from "next-themes";
+import { trpc } from "~/utils/trpc";
 import "../styles/global.scss";
 
-export default function MyApp({ Component, pageProps }: AppProps) {
+const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
 	return (
 		<AuthContextProvider>
 			<AnimatePresence mode="wait" initial={false}>
@@ -14,4 +15,6 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 			</AnimatePresence>
 		</AuthContextProvider>
 	);
-}
+};
+
+export default trpc.withTRPC(MyApp);

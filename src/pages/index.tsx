@@ -1,11 +1,16 @@
 import type { NextPage } from "next";
 import Link from "next/link";
-import { Nav, Footer, ThemeToggle } from "@components";
+import { Nav, Footer, ThemeToggle } from "~/components";
 import { motion } from "framer-motion";
 
 const Index: NextPage = () => {
 	return (
-		<motion.div className="font-dmserif flex flex-col h-screen justify-between dark:text-white">
+		<motion.div
+			className="font-dmserif flex flex-col h-screen justify-between dark:text-white"
+			initial={{ opacity: 0 }}
+			animate={{ opacity: 1 }}
+			exit={{ opacity: 0 }}
+		>
 			<Nav />
 			<section className="flex flex-col landing-section space-y-12 items-center">
 				<h1 className="text-6xl w-[650px] tracking-wider flex leading-tight justify-center flex-col items-center">

@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { Nav, L, ThemeToggle } from "@components";
-import { useAuth } from "@context";
+import { Nav, L, ThemeToggle } from "~/components";
+import { useAuth } from "~/context";
 import { useRouter } from "next/router";
 
 const Login: NextPage = () => {
