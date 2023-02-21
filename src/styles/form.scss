@@ -1,0 +1,37 @@
+.form {
+	@apply p-4 flex flex-col justify-center bg-dark rounded grow w-[350px];
+
+	label {
+	}
+
+	input,
+	textarea,
+	select {
+		@apply border-2 border-secondary-dark bg-dark;
+		@apply p-2 px-3 rounded my-1;
+	}
+
+	input[type="radio"] {
+		appearance: none;
+		@apply grow text-center cursor-pointer;
+		transition: transform 0.15s;
+
+		&:checked {
+			@apply bg-secondary-dark;
+		}
+
+		&:active {
+			@apply scale-95;
+		}
+
+		&:before {
+			content: attr(value);
+		}
+	}
+
+	input[type="button"],
+	button[type="submit"] {
+		@apply w-full p-2 bg-secondary-dark my-1 rounded shadow-lg;
+		@apply disabled:bg-gray-600;
+	}
+}

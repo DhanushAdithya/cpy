@@ -8,6 +8,7 @@ const ThemeToggle = () => {
 	const toggleTheme = (): void => {
 		setTheme(theme === "light" ? "dark" : "light");
 	};
+
 	return (
 		<motion.button
 			whileHover={{ scale: 1.2 }}

@@ -3,10 +3,12 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Nav, ThemeToggle } from "~/components";
 import { useAuth } from "~/context";
 import { useRouter } from "next/router";
+import HomeLayout from "~/components/HomeLayout";
 
 const Signup: NextPage = () => {
 	const { user, signUp } = useAuth();
 	const router = useRouter();
+	const [loading, setLoading] = useState<boolean>(false);
 	const [form, setForm] = useState({
 		name: "",
 		email: "",
@@ -21,14 +23,14 @@ const Signup: NextPage = () => {
 	const onSubmit = async (evt: FormEvent<HTMLFormElement>) => {
 		evt.preventDefault();
 
-		const { error, message } = await signUp(
-			form.name,
-			form.uname,
-			form.email,
-			form.password
-		);
-		if (error) console.log(message);
-		router.push("/c");
+		const { error, message } = await signUp(form);
+		if (error) {
+			console.log(message);
+			setLoading(false);
+		} else {
+			setLoading(false);
+			router.push("/c");
+		}
 	};
 
 	const updateField = (evt: ChangeEvent<HTMLInputElement>): void => {
@@ -39,8 +41,11 @@ const Signup: NextPage = () => {
 	};
 
 	return (
-		<>
+		<HomeLayout>
 			<Nav form />
+			<h1 className="text-3xl font-bold dark:text-light text-center text-dark">
+				Sign Up
+			</h1>
 			<form className="primary-form" onSubmit={onSubmit}>
 				<input
 					type="name"
@@ -72,13 +77,19 @@ const Signup: NextPage = () => {
 				/>
 				<button
 					type="submit"
-					className="p-2 px-9 border-2 text-lg text-white hover:bg-white hover:text-black ease-in duration-100 font-bold"
+					className={`${
+						loading ? "bg-gray-300" : ""
+					} p-2 px-9 border-2 text-lg text-white flex items-center justify-center hover:bg-white hover:text-black ease-in duration-100 font-bold`}
+					disabled={loading}
 				>
+					{loading && (
+						<div className="border-4 border-t-black w-4 h-4 border-transparent rounded-full animate-spin mr-4"></div>
+					)}
 					Sign Up
 				</button>
-				<ThemeToggle />
 			</form>
-		</>
+			<ThemeToggle />
+		</HomeLayout>
 	);
 };
 

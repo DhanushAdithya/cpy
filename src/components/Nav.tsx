@@ -14,9 +14,11 @@ const Nav = (props: Props) => {
 			</h1>
 			{!props.form && (
 				<ul className="flex gap-4">
-					<li className="text-xl">
-						<Link href="/features">features</Link>
-					</li>
+					{/*
+                        <li className="text-xl">
+                            <Link href="/features">features</Link>
+                        </li>
+                    */}
 					{user ? (
 						<li className="text-xl">
 							<Link href="/c">your cpys</Link>

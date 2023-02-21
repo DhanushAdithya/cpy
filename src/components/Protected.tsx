@@ -3,14 +3,14 @@ import { ReactNode, useEffect } from "react";
 import { useAuth } from "~/context";
 
 export default ({ children }: { children: ReactNode }) => {
-	const { user } = useAuth();
+	// const { user } = useAuth();
 	const router = useRouter();
 
-	console.log(router.pathname);
-
 	useEffect(() => {
-		if (!user) router.push("/login");
-	}, [router, user]);
+		// if (!user) router.push("/login");
+		if (!localStorage.getItem("cpy-token")) router.push("/login");
+	}, []);
+	// [router, user]);
 
-	return <>{user && children}</>;
+	return <>{localStorage.getItem("cpy-token") && children}</>;
 };

@@ -1,0 +1,22 @@
+.cpy-sidebar {
+	@apply md:w-[260px];
+	@apply dark:bg-[#1d073a] bg-[#e5fae6];
+	@apply flex flex-col gap-2;
+	@apply h-screen p-2 md:p-4;
+	@apply transition duration-300;
+	@apply shadow-lg;
+	@apply sticky top-0;
+	@apply z-50;
+
+	.sidebar-item {
+		@apply w-full px-3 py-2 rounded-md;
+		@apply flex justify-between items-center;
+		@apply transition duration-200;
+		@apply hover:dark:bg-[#2b0d52] hover:bg-[#d1e0d1];
+
+		& .text {
+			@apply hidden;
+			@apply md:flex;
+		}
+	}
+}
