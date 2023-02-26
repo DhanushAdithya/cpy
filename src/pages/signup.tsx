@@ -29,7 +29,7 @@ const Signup: NextPage = () => {
 			setLoading(false);
 		} else {
 			setLoading(false);
-			router.push("/c");
+			router.push("/login");
 		}
 	};
 

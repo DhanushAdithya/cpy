@@ -24,12 +24,8 @@ const Login: NextPage = () => {
 		const { error, message } = await logIn(form);
 		if (!error) {
 			localStorage.setItem("cpy-token", message);
+			router.push("/c");
 		}
-		if (error) {
-			console.log(message);
-			setLoading(false);
-		}
-		router.push("/c");
 		setLoading(false);
 	};
 
