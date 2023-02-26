@@ -4,29 +4,37 @@ import { useCpy } from "~/context/CpyContext";
 import { trpc } from "~/utils/trpc";
 import Toast from "./Toast";
 
-const TagAdd = () => {
+type TagProps = {
+	name?: string;
+	update?: boolean;
+};
+
+const TagAdd = ({ name, update = false }: TagProps) => {
 	const [loading, setLoading] = useState(false);
 	const [showToast, setToast] = useState(false);
-	const [form, setForm] = useState({
-		name: "",
-	});
-	const { mutate } = trpc.cpy.addTag.useMutation();
+	const [tagName, setTagName] = useState(name ?? "");
+	const { mutate } = update
+		? trpc.cpy.updateTag.useMutation()
+		: trpc.cpy.addTag.useMutation();
 
 	const { tagsRefetch } = useCpy();
 
 	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setLoading(true);
-		mutate(form, {
-			onSuccess() {
-				tagsRefetch();
-				setToast(true);
-				setTimeout(() => {
-					setToast(false);
-				}, 2000);
-				setLoading(false);
-			},
-		});
+		mutate(
+			{ name, tagName },
+			{
+				onSuccess() {
+					tagsRefetch();
+					setToast(true);
+					setTimeout(() => {
+						setToast(false);
+					}, 2000);
+					setLoading(false);
+				},
+			}
+		);
 	};
 
 	return (
@@ -35,14 +43,12 @@ const TagAdd = () => {
 				type="text"
 				placeholder="Tag Name"
 				name="name"
-				value={form.name}
+				value={tagName}
 				minLength={1}
 				maxLength={12}
 				pattern="[A-z0-9_-]{1,12}"
-				className="invalid:border-red-900 border-2 outline-none border-transparent"
-				onChange={e =>
-					setForm({ ...form, [e.target.name]: e.target.value })
-				}
+				className="invalid:border-re-900 border-2 outline-none border-transparent"
+				onChange={e => setTagName(e.target.value)}
 			/>
 			<motion.button
 				whileTap={{ scale: 0.95 }}
@@ -53,10 +59,10 @@ const TagAdd = () => {
 				{loading ? (
 					<>
 						<div className="w-4 h-4 animate-spin border-4 border-t-white rounded-full border-transparent mr-4"></div>
-						Adding ...
+						<>{update ? "Updating ..." : "Adding ..."}</>
 					</>
 				) : (
-					<>Add Tag</>
+					<>{update ? "Update Tag" : "Add Tag"}</>
 				)}
 			</motion.button>
 			<Toast show={showToast} msg={"Tag Added!"} />
