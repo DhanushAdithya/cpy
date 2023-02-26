@@ -5,23 +5,6 @@ import {
 	useEffect,
 	useState,
 } from "react";
-import {
-	createUserWithEmailAndPassword,
-	onAuthStateChanged,
-	signInWithEmailAndPassword,
-	signOut,
-	updateProfile,
-} from "firebase/auth";
-import { setDoc, doc } from "firebase/firestore";
-import {
-	auth,
-	cpysCol,
-	db,
-	settingsCol,
-	tagsCol,
-	usersCol,
-	usertestCol,
-} from "../firebase/config";
 import type { User, LoginState, SignUpState, AuthContextType } from "~/types";
 import { trpc } from "~/utils/trpc";
 
@@ -36,61 +19,21 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 	const { mutateAsync: loginMutate } = trpc.user.login.useMutation();
 
 	useEffect(() => {
-		const unsubscribe = onAuthStateChanged(auth, user => {
-			if (user && user.email && user.displayName) {
-				setUser({
-					uid: user.uid,
-					email: user.email,
-					uname: user.displayName,
-					name: "",
-				});
-			} else {
-				setUser(null);
-			}
-			setLoading(false);
-		});
-
-		return () => unsubscribe();
+        setLoading(false);
 	}, []);
 
 	const signUp = async (form: SignUpState) => {
 		const { name, uname, email, password } = form;
 		try {
-			const { message } = await signupMutate({
+			const { error, message } = await signupMutate({
 				name,
 				uname,
 				email,
 				password,
-			});
-			// const {
-			// 	user: { uid },
-			// } = await createUserWithEmailAndPassword(auth, email, password);
-			// if (!auth.currentUser) throw Error("no user signed in");
-			// await updateProfile(auth.currentUser, { displayName: uname });
-			// const userTestDoc = doc(usertestCol, uid);
-			// const usersDoc = doc(usersCol, uid);
-			// const cpysDoc = doc(cpysCol, uid);
-			// const settingsDoc = doc(settingsCol, uid);
-			// const tagsDoc = doc(tagsCol, uid);
-			// await setDoc(userTestDoc, {
-			// 	email,
-			// 	uname,
-			// 	name,
-			// 	settings: {
-			// 		theme: "dark",
-			// 		isKeySet: false,
-			// 		showHelp: true,
-			// 		showArchive: true,
-			// 	},
-			// });
-			// await setDoc(usersDoc, { email, uname, name });
-			// await setDoc(cpysDoc, { cpys: [] });
-			// await setDoc(settingsDoc, { theme: "dark" });
-			// await setDoc(tagsDoc, { tags: [] });
-			setUser({ uid: message, uname, email, name });
-			localStorage.setItem("cpy-uid", JSON.stringify(message));
-			return { error: false, message };
-			// return { error: false, message: uid };
+			}) as { error: boolean; message: string | number };
+			setUser({ uid: message as number, uname, email, name });
+            if (!error) return { error: false, message: message as string };
+            return { error, message: message as string };
 		} catch (err) {
 			if (err instanceof Error) {
 				return { error: true, message: err.message };
@@ -102,26 +45,19 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 
 	const logIn = async (form: LoginState) => {
 		const { email, password } = form;
-		const { message } = await loginMutate({ email, password });
-		console.log(message);
-		// try {
-		// 	const {
-		// 		user: { uid },
-		// 	} = await signInWithEmailAndPassword(auth, email, password);
-		return { error: false, message: message as string };
-		// } catch (err) {
-		// 	if (err instanceof Error) {
-		// 		return { error: true, message: err.message };
-		// 	} else {
-		// 		return { error: true, message: "unknown error occured" };
-		// 	}
-		// }
+        try {
+            const { error, message } = await loginMutate({ email, password });
+            return { error, message: message as string };
+        } catch (err) {
+            if (err instanceof Error) 
+                return { error: true, message: err.message };
+            return { error: true, message: "Unknown Error Occured" };
+        }
 	};
 
 	const logOut = async () => {
 		setUser(null);
-		localStorage.removeItem("cpy-uid");
-		await signOut(auth);
+		localStorage.removeItem("cpy-token");
 	};
 
 	return (

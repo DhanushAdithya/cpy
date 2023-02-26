@@ -1,6 +1,5 @@
 import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
-import { auth } from "~/firebase/config";
 import type { AppRouter } from "~/types";
 
 function getBaseUrl() {
@@ -26,9 +25,8 @@ export const trpc = createTRPCNext<AppRouter>({
 				httpBatchLink({
 					url: `${getBaseUrl()}/api/trpc`,
 					headers() {
-						const uid = localStorage.getItem("cpy-uid") || "";
-						// const uid = auth.currentUser?.uid || "";
-						return { "x-uid": uid };
+						const token = localStorage.getItem("cpy-token") || "";
+						return { "x-token": token };
 					},
 				}),
 			],
