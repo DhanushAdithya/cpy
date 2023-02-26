@@ -1,15 +1,24 @@
 .cpy-sidebar {
+	@apply w-screen fixed bottom-0;
 	@apply md:w-[260px];
 	@apply dark:bg-[#1d073a] bg-[#e5fae6];
-	@apply flex flex-col gap-2;
-	@apply h-screen p-2 md:p-4;
+	@apply flex justify-center md:justify-start md:flex-col gap-2;
+	@apply h-16 md:h-screen p-2 md:p-4;
+	@apply overflow-x-scroll md:overflow-x-hidden;
 	@apply transition duration-300;
 	@apply shadow-lg;
-	@apply sticky top-0;
+	@apply md:sticky md:top-0;
 	@apply z-50;
 
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
+
 	.sidebar-item {
-		@apply w-full px-3 py-2 rounded-md;
+		@apply w-full px-3 md:py-2 rounded-md;
 		@apply flex justify-between items-center;
 		@apply transition duration-200;
 		@apply hover:dark:bg-[#2b0d52] hover:bg-[#d1e0d1];

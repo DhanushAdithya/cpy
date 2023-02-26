@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import {
 	Archive,
@@ -19,6 +20,7 @@ import TagAdd from "./TagAdd";
 const Sidebar = () => {
 	const { logOut } = useAuth();
 	const { settings } = useSettings();
+	const router = useRouter();
 	const [show, setShow] = useState<boolean>(false);
 	const { tagsList, tagsLoading } = useCpy();
 
@@ -29,7 +31,7 @@ const Sidebar = () => {
 					cpy
 				</h1>
 			</div>
-			<div className="flex flex-col gap-px">
+			<div className="flex md:flex-col gap-px">
 				<Link href="/c">
 					<SidebarItem text="All" Icon={Folder} />
 				</Link>
@@ -39,8 +41,8 @@ const Sidebar = () => {
 					</Link>
 				)}
 			</div>
-			<div className="flex flex-col gap-px">
-				<div className="flex justify-center md:justify-between px-2 text-sm font-bold text-gray-500">
+			<div className="flex md:flex-col gap-px">
+				<div className="flex md:justify-center md:justify-between px-2 text-sm font-bold text-gray-500">
 					<h3 className="hidden md:block">Tags</h3>
 					<button onClick={() => setShow(!show)}>
 						<Plus size={14} />
@@ -54,7 +56,7 @@ const Sidebar = () => {
 							</Link>
 					  ))}
 			</div>
-			<div className="flex flex-col gap-px">
+			<div className="flex md:flex-col gap-px">
 				{settings.showHelp && (
 					<Link href="/help">
 						<SidebarItem text="Help" Icon={HelpCircle} />
@@ -63,7 +65,16 @@ const Sidebar = () => {
 				<Link href="/settings">
 					<SidebarItem text="Settings" Icon={Settings} />
 				</Link>
-				<SidebarItem text="Logout" Icon={LogOut} onClick={logOut} />
+				<Link href="#">
+					<SidebarItem
+						text="Logout"
+						Icon={LogOut}
+						onClick={() => {
+							logOut();
+							router.push("/login");
+						}}
+					/>
+				</Link>
 			</div>
 			{show && (
 				<Portal show={show} setShow={setShow}>
