@@ -13,7 +13,7 @@ const ThemeToggle = () => {
 		<motion.button
 			whileHover={{ scale: 1.2 }}
 			whileTap={{ scale: 0.8 }}
-			className="select-none cursor-pointer p-2 rounded-md fixed bottom-6 right-6"
+			className="select-none cursor-pointer p-2 rounded-md fixed right-6 bottom-20 md:bottom-6"
 			onClick={toggleTheme}
 		>
 			{theme && theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}

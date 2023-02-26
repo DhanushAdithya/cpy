@@ -11,7 +11,7 @@ const Layout = (props: Props) => {
 	return (
 		<div className="flex">
 			<Sidebar />
-			<div className="p-5 grow min-h-screen">
+			<div className="p-5 grow mb-16 md:mb-0 min-h-screen">
 				<Header title={props.title} />
 				{props.children}
 			</div>
