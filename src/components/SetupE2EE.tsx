@@ -1,15 +1,19 @@
 import { motion } from "framer-motion";
 import { FormEvent, useState } from "react";
 import E2EE from "~/lib/e2ee";
+import { trpc } from "~/utils/trpc";
 
 const SetupE2EE = () => {
 	const [pass, setPass] = useState<string>("");
 	const [loading, setLoading] = useState<boolean>(false);
+	const { mutate } = trpc.user.settings.useMutation();
+
 	const genKey = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const key = E2EE.generateKeyFromPassword(pass);
 		E2EE.saveKeyToLocalStorage(key);
 		setLoading(true);
+		mutate(localStorage.getItem("cpy-token") as string);
 	};
 
 	return (

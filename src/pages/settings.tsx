@@ -5,6 +5,7 @@ import Portal from "~/components/Portal";
 import SetupE2EE from "~/components/SetupE2EE";
 import { useSettings } from "~/context/SettingsContext";
 import E2EE from "~/lib/e2ee";
+import { trpc } from "~/utils/trpc";
 
 const Settings = () => {
 	const { theme, setTheme } = useTheme();
@@ -12,6 +13,7 @@ const Settings = () => {
 	const [E2EEState, setE2EE] = useState<boolean>(false);
 	const { settings, setSettings } = useSettings();
 	const fileRef = useRef<HTMLInputElement>(null);
+	const { mutate } = trpc.user.settings.useMutation();
 
 	const toggleTheme = (): void => {
 		setTheme(theme === "light" ? "dark" : "light");
@@ -26,6 +28,7 @@ const Settings = () => {
 			});
 			reader.readAsText(files[0]);
 		}
+		mutate(localStorage.getItem("cpy-token") as string);
 		setE2EE(true);
 	};
 

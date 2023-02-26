@@ -26,17 +26,19 @@ const authMiddleware = t.middleware(async ({ ctx, next }) => {
 	if (!ctx.token) {
 		throw new TRPCError({ code: "UNAUTHORIZED" });
 	}
-    const { message, error } = verifyJWT(ctx.token);
-    if (error) {
+	const { message, error } = verifyJWT(ctx.token);
+	if (error) {
 		throw new TRPCError({ code: "UNAUTHORIZED" });
-    }
-	return next({ ctx: message } as { ctx: {
-        token: string;
-        uid: number;
-        iss: string;
-        iat: number;
-        exp: number;
-    } });
+	}
+	return next({ ctx: message } as {
+		ctx: {
+			token: string;
+			uid: number;
+			iss: string;
+			iat: number;
+			exp: number;
+		};
+	});
 });
 
 export const router = t.router;
