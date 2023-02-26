@@ -2,21 +2,21 @@ import { Protected } from "~/components";
 import type { NextPage } from "next";
 import Layout from "~/components/Layout";
 import CpyCard from "~/components/CpyCard";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useCpy } from "~/context/CpyContext";
 import { AnimatePresence } from "framer-motion";
 
 const CpyIndex: NextPage = () => {
 	const { cpysList, cpysRefetch, cpysLoading, setQuery } = useCpy();
+	const [mounted, setMounted] = useState<boolean>(false);
 
 	useEffect(() => {
-		// cpysRefetch();
+		cpysRefetch();
 		setQuery(q => ({ ...q, archive: false }));
+		setMounted(true);
 	}, []);
 
-	if (!cpysLoading) {
-		console.log(cpysList);
-	}
+	if (!mounted) return null;
 
 	return (
 		<Protected>
@@ -24,13 +24,17 @@ const CpyIndex: NextPage = () => {
 				<AnimatePresence>
 					{cpysLoading
 						? null
-						: cpysList.cpys.map(tag => (
+						: cpysList &&
+						  cpysList.cpys.map(cpy => (
 								<CpyCard
-									name={tag.name}
-									content={tag.content}
-									id={tag.id}
-									key={tag.id}
-									isProtected={tag.isProtected}
+									name={cpy.name}
+									content={cpy.content}
+									id={cpy.id}
+									key={cpy.id}
+									isProtected={cpy.isprotected}
+									isArchived={cpy.isarchived}
+									isPublic={cpy.ispublic}
+									tag={cpy.tags[0]}
 								/>
 						  ))}
 				</AnimatePresence>

@@ -17,12 +17,17 @@ const CpyArchive: NextPage = () => {
 			<Layout title="Archive">
 				{cpysLoading
 					? null
-					: cpysList.cpys.map(tag => (
+					: cpysList &&
+					  cpysList.cpys.map(cpy => (
 							<CpyCard
-								name={tag.name}
-								content={tag.content}
-								id={tag.id}
-								key={tag.id}
+								name={cpy.name}
+								content={cpy.content}
+								id={cpy.id}
+								key={cpy.id}
+								isProtected={cpy.isprotected}
+								isArchived={cpy.isarchived}
+								isPublic={cpy.ispublic}
+								tag={cpy.tags[0]}
 							/>
 					  ))}
 			</Layout>
