@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useCpy } from "~/context/CpyContext";
 import E2EE from "~/lib/e2ee";
 import { trpc } from "~/utils/trpc";
@@ -7,33 +7,51 @@ import { useModal } from "./Portal";
 import Toast from "./Toast";
 
 type CpyProps = {
+	id: number;
 	name: string;
 	content: string;
-	date: number;
 	tag: string;
 	isPublic: boolean;
-	expiry: number;
 	isProtected: boolean;
-	isArchived: boolean;
 };
 
-const CpyAdd = () => {
+const CpyEdit = ({
+	id,
+	name,
+	content,
+	tag,
+	isPublic,
+	isProtected,
+}: {
+	id: number;
+	name: string;
+	content: string;
+	tag: string;
+	isPublic: boolean;
+	isProtected: boolean;
+}) => {
 	const { setShow } = useModal();
 	const [loading, setLoading] = useState(false);
 	const [toast, setToast] = useState(false);
+	const [cpyContent, setCpyContent] = useState<string>(content);
 	const [form, setForm] = useState<CpyProps>({
-		name: "",
-		content: "",
-		tag: "",
-		isPublic: false,
-		date: 19,
-		expiry: 21,
-		isProtected: false,
-		isArchived: false,
+		id,
+		name,
+		content,
+		tag,
+		isPublic,
+		isProtected,
 	});
 
+	useEffect(() => {
+		if (isProtected) {
+			const decr = new E2EE(E2EE.loadKeyFromLocalStorage());
+			setCpyContent(decr.decryptContent(content));
+		}
+	}, []);
+
 	const { tagsList, tagsLoading, cpysRefetch } = useCpy();
-	const { mutate } = trpc.cpy.create.useMutation({
+	const { mutate } = trpc.cpy.update.useMutation({
 		onSuccess() {
 			cpysRefetch();
 			setToast(true);
@@ -49,7 +67,7 @@ const CpyAdd = () => {
 		e.preventDefault();
 		setLoading(true);
 		if (!form.isProtected) {
-			mutate(form);
+			mutate({ ...form, content: isProtected ? cpyContent : content });
 		} else {
 			const encr = new E2EE(E2EE.loadKeyFromLocalStorage());
 			mutate({ ...form, content: encr.encryptContent(form.content) });
@@ -70,10 +88,11 @@ const CpyAdd = () => {
 				name="content"
 				placeholder="content"
 				required
-				value={form.content}
-				onChange={e =>
-					setForm(form => ({ ...form, [e.target.name]: e.target.value }))
-				}
+				value={cpyContent}
+				onChange={e => {
+					setForm(form => ({ ...form, [e.target.name]: e.target.value }));
+					setCpyContent(e.target.value);
+				}}
 			/>
 			<div className="flex space-x-2">
 				<input
@@ -128,6 +147,7 @@ const CpyAdd = () => {
 			)}
 			<select
 				onChange={e => {
+					console.log(e.target);
 					setForm(form => ({
 						...form,
 						[e.target.name]: e.target.value,
@@ -154,15 +174,15 @@ const CpyAdd = () => {
 				{loading ? (
 					<>
 						<div className="w-4 h-4 animate-spin border-4 border-t-white rounded-full border-transparent mr-4"></div>
-						Adding ...
+						Updating ...
 					</>
 				) : (
-					<>Add Cpy</>
+					<>Update Cpy</>
 				)}
 			</motion.button>
-			<Toast show={toast} msg={"Cpy Added!"} />
+			<Toast show={toast} msg={"Cpy Updated!"} />
 		</form>
 	);
 };
 
-export default CpyAdd;
+export default CpyEdit;
