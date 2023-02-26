@@ -1,10 +1,4 @@
-import {
-	createContext,
-	ReactNode,
-	useContext,
-	useEffect,
-	useState,
-} from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 import { trpc } from "~/utils/trpc";
 
 const CpyContext = createContext({});

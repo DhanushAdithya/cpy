@@ -19,21 +19,21 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 	const { mutateAsync: loginMutate } = trpc.user.login.useMutation();
 
 	useEffect(() => {
-        setLoading(false);
+		setLoading(false);
 	}, []);
 
 	const signUp = async (form: SignUpState) => {
 		const { name, uname, email, password } = form;
 		try {
-			const { error, message } = await signupMutate({
+			const { error, message } = (await signupMutate({
 				name,
 				uname,
 				email,
 				password,
-			}) as { error: boolean; message: string | number };
+			})) as { error: boolean; message: string | number };
 			setUser({ uid: message as number, uname, email, name });
-            if (!error) return { error: false, message: message as string };
-            return { error, message: message as string };
+			if (!error) return { error: false, message: message as string };
+			return { error, message: message as string };
 		} catch (err) {
 			if (err instanceof Error) {
 				return { error: true, message: err.message };
@@ -45,14 +45,13 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 
 	const logIn = async (form: LoginState) => {
 		const { email, password } = form;
-        try {
-            const { error, message } = await loginMutate({ email, password });
-            return { error, message: message as string };
-        } catch (err) {
-            if (err instanceof Error) 
-                return { error: true, message: err.message };
-            return { error: true, message: "Unknown Error Occured" };
-        }
+		try {
+			const { error, message } = await loginMutate({ email, password });
+			return { error, message: message as string };
+		} catch (err) {
+			if (err instanceof Error) return { error: true, message: err.message };
+			return { error: true, message: "Unknown Error Occured" };
+		}
 	};
 
 	const logOut = async () => {

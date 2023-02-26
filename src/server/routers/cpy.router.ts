@@ -1,18 +1,5 @@
 import { router, procedure } from "~/server/trpc";
 import { z } from "zod";
-import {
-	addDoc,
-	arrayUnion,
-	collection,
-	deleteDoc,
-	doc,
-	getDoc,
-	getDocs,
-	setDoc,
-	updateDoc,
-} from "firebase/firestore";
-import { v4 as uuid } from "uuid";
-import { cpysCol, tagsCol, usertestCol } from "~/firebase/config";
 import conn from "~/lib/pgpool";
 
 export const cpyRouter = router({
@@ -28,30 +15,15 @@ export const cpyRouter = router({
 		)
 		.query(async ({ ctx, input }) => {
 			const { uid } = ctx;
-			// const user = collection(usertestCol, uid, "cpy");
-			// const data = await getDocs(user);
-			// const cpys = data.docs
-			// console.log(cpys.map(e => e.data()))
 			try {
 				const result = await conn.query(
 					"SELECT * FROM cpys WHERE isArchived = $1 AND userid = $2",
-					[input?.archive ?? false, Number(uid)]
+					[input?.archive ?? false, uid]
 				);
 				return { cpys: result.rows };
 			} catch (err) {
 				return { cpys: [] };
 			}
-			// const cpysDoc = doc(cpysCol, uid);
-			// const docSnap = await getDoc(cpysDoc);
-			// if (docSnap.exists()) {
-			// 	const data = docSnap.data();
-			// 	if (input && input.archive) {
-			// 		const archived = data.cpys.filter(cpy => cpy.isArchived);
-			// 		return { cpys: archived };
-			// 	}
-			// 	return { cpys: data.cpys.filter(cpy => !cpy.isArchived) };
-			// }
-			// return { cpys: [] };
 		}),
 	create: procedure
 		.input(
@@ -68,40 +40,48 @@ export const cpyRouter = router({
 		)
 		.mutation(async ({ ctx, input }) => {
 			const { uid } = ctx;
-			// const user = collection(usertestCol, uid, "cpy");
-			// await addDoc(user, input);
 			const { name, content, tag, isPublic, isProtected } = input;
 			const result = await conn.query(
 				"INSERT INTO cpys (name, content, tags, isPublic, isProtected, userid) VALUES ($1, $2, $3, $4, $5, $6)",
 				[name, content, [tag], isPublic, isProtected, Number(uid)]
 			);
 			console.log(result);
-			const cpysDoc = doc(cpysCol, uid);
-			await updateDoc(cpysDoc, {
-				cpys: arrayUnion({ ...input, id: uuid(), isArchived: false }),
-			});
 		}),
-	delete: procedure.input(z.string()).mutation(async ({ ctx, input: id }) => {
-		const { uid } = ctx;
-		// const user = doc(usertestCol, uid, "cpy", id);
-		// await deleteDoc(user);
-		const cpysDoc = doc(cpysCol, uid);
-		const docSnap = await getDoc(cpysDoc);
-		if (docSnap.exists()) {
-			const { cpys } = docSnap.data();
-			const updatedCpys = cpys.filter(cpy => cpy.id !== id);
-			await updateDoc(cpysDoc, { cpys: updatedCpys });
+	update: procedure
+		.input(
+			z.object({
+				id: z.number(),
+				name: z.string(),
+				content: z.string(),
+				isPublic: z.boolean(),
+				isProtected: z.boolean(),
+				tag: z.string(),
+			})
+		)
+		.mutation(async ({ ctx, input }) => {
+			const { id, name, content, isPublic, isProtected, tag } = input;
+			await conn.query(
+				"UPDATE cpys SET name = $2, content = $3, ispublic = $4, isprotected = $5, tags = $6 WHERE id = $1",
+				[id, name, content, isPublic, isProtected, [tag]]
+			);
+		}),
+	delete: procedure.input(z.number()).mutation(async ({ ctx, input: id }) => {
+		try {
+			await conn.query("DELETE FROM cpys WHERE id = $1", [id]);
+			return { error: false };
+		} catch (err) {
+			return { error: true };
 		}
 	}),
-	archive: procedure.input(z.string()).mutation(async ({ ctx, input: id }) => {
-		const { uid } = ctx;
-		const cpysDoc = doc(cpysCol, uid);
-		const docSnap = await getDoc(cpysDoc);
-		if (docSnap.exists()) {
-			const { cpys } = docSnap.data();
-			const idx = cpys.findIndex(cpy => cpy.id === id);
-			cpys[idx] = { ...cpys[idx], isArchived: true };
-			await updateDoc(cpysDoc, { cpys });
+	archive: procedure.input(z.number()).mutation(async ({ ctx, input: id }) => {
+		try {
+			await conn.query(
+				"UPDATE cpys SET isArchived = NOT isArchived WHERE id = $1",
+				[id]
+			);
+			return { error: false };
+		} catch (err) {
+			return { error: true };
 		}
 	}),
 	listTags: procedure
@@ -114,72 +94,84 @@ export const cpyRouter = router({
 		)
 		.query(async ({ ctx, input }) => {
 			const { uid } = ctx;
-			const tagsDoc = doc(tagsCol, uid);
-			const docSnap = await getDoc(tagsDoc);
-			if (docSnap.exists()) {
-				const data = docSnap.data();
-				return { tags: data.tags };
-			}
-			return { tags: [] };
+			const { rows } = await conn.query(
+				"SELECT tags FROM users WHERE id = $1",
+				[uid]
+			);
+			return {
+				tags: !rows.length
+					? []
+					: rows[0].tags.reduce((acc, val) => {
+							acc.push({
+								name: val,
+								id: Math.floor(Math.random() * 100),
+							});
+							return acc;
+					  }, []),
+			};
 		}),
 	getTag: procedure
 		.input(
 			z.object({
-				id: z.string(),
+				name: z.string(),
 			})
 		)
 		.query(async ({ ctx, input }) => {
 			const { uid } = ctx;
-			const cpysDoc = doc(cpysCol, uid);
-			const docSnap = await getDoc(cpysDoc);
-			if (docSnap.exists()) {
-				const { cpys } = docSnap.data();
-				const list = cpys.filter(
-					cpy => cpy.tag === input.id && !cpy.isArchived
+			try {
+				const { rows } = await conn.query(
+					"SELECT * FROM cpys WHERE $2 = ANY(tags) AND userid = $1 AND isArchived = FALSE",
+					[uid, input.name]
 				);
-				return { list };
+				return { list: rows };
+			} catch (err) {
+				if (err instanceof Error) return { list: [] };
+				return { list: true };
 			}
-			return { list: [] };
 		}),
 	addTag: procedure
 		.input(
 			z.object({
-				name: z
-					.string()
-					.max(12, { message: "tag name cannot exceed 12 letters" }),
+				name: z.string().optional(),
+				tagName: z.string(),
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
 			const { uid } = ctx;
-			const tagsDoc = doc(tagsCol, uid);
-			await updateDoc(tagsDoc, {
-				tags: arrayUnion({ ...input, id: uuid() }),
-			});
+			await conn.query(
+				"UPDATE users SET tags = array_append(tags, $2) WHERE id = $1",
+				[uid, input.tagName]
+			);
 		}),
 	deleteTag: procedure
-		.input(
-			z.object({
-				id: z.string(),
-			})
-		)
-		.mutation(async ({ ctx, input }) => {
+		.input(z.string())
+		.mutation(async ({ ctx, input: tag }) => {
 			const { uid } = ctx;
-			const cpysDoc = doc(cpysCol, uid);
-			const docSnap = await getDoc(cpysDoc);
-			if (docSnap.exists()) {
-				// const { cpys } = docSnap.data();
-				// const updatedCpys = cpys.filter(cpy => cpy.id !== id);
-				// await updateDoc(cpysDoc, { cpys: updatedCpys });
-			}
+			await conn.query(
+				"UPDATE users SET tags = array_remove(tags, $2) WHERE id = $1",
+				[uid, tag]
+			);
+			await conn.query(
+				"UPDATE cpys SET tags = array[''] WHERE userid = $1 AND $2 = ANY(tags)",
+				[uid, tag]
+			);
 		}),
 	updateTag: procedure
 		.input(
 			z.object({
-				id: z.string(),
-				name: z
-					.string()
-					.max(12, { message: "tag name cannot exceed 12 letters" }),
+				name: z.string().optional(),
+				tagName: z.string(),
 			})
 		)
-		.mutation(({ ctx, input }) => {}),
+		.mutation(async ({ ctx, input }) => {
+			const { uid } = ctx;
+			await conn.query(
+				"UPDATE users SET tags = array_replace(tags, $2, $3) WHERE id = $1",
+				[uid, input.name, input.tagName]
+			);
+			await conn.query(
+				"UPDATE cpys SET tags = array_replace(tags, $2, $3) WHERE userid = $1 AND $2 = ANY(tags)",
+				[uid, input.name, input.tagName]
+			);
+		}),
 });
