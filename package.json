@@ -39,6 +39,7 @@
 		"@types/node": "18.11.17",
 		"@types/pg": "^8.6.6",
 		"@types/react": "18.0.26",
+		"@types/react-dom": "^18.0.11",
 		"@types/uuid": "^9.0.0",
 		"autoprefixer": "^10.4.13",
 		"husky": "^8.0.3",
