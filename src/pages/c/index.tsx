@@ -12,6 +12,7 @@ const CpyIndex: NextPage = () => {
 
 	useEffect(() => {
 		cpysRefetch();
+		// @ts-ignore
 		setQuery(q => ({ ...q, archive: false }));
 		setMounted(true);
 	}, []);
@@ -34,6 +35,7 @@ const CpyIndex: NextPage = () => {
 									isProtected={cpy.isprotected}
 									isArchived={cpy.isarchived}
 									isPublic={cpy.ispublic}
+									// @ts-ignore
 									tag={cpy.tags[0]}
 								/>
 						  ))}

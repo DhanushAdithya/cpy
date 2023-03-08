@@ -42,7 +42,7 @@ const Sidebar = () => {
 				)}
 			</div>
 			<div className="flex md:flex-col gap-px">
-				<div className="flex md:justify-center md:justify-between px-2 text-sm font-bold text-gray-500">
+				<div className="flex md:justify-center px-2 text-sm font-bold text-gray-500">
 					<h3 className="hidden md:block">Tags</h3>
 					<button onClick={() => setShow(!show)}>
 						<Plus size={14} />

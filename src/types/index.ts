@@ -6,6 +6,16 @@ export type UserColType = {
 	name: string;
 };
 
+export type CpyContextType = {
+	tagsList: TagColType;
+	cpysList: CpyColType;
+	cpysLoading: boolean;
+	tagsLoading: boolean;
+	cpysRefetch: Function;
+	tagsRefetch: Function;
+	setQuery: Function;
+};
+
 export type CpyType = {
 	name: string;
 	content: string;
@@ -36,22 +46,22 @@ export interface UserType {
 
 export type TagColType = {
 	tags: {
-		id: string;
+		id: number;
 		name: string;
 	}[];
 };
 
 export type CpyColType = {
 	cpys: {
-		id: string;
+		id: number;
 		name: string;
 		content: string;
-		isPublic: boolean;
+		ispublic: boolean;
 		tag: string;
-		isProtected: boolean;
+		isprotected: boolean;
 		expiry: string;
 		date: string;
-		isArchived: boolean;
+		isarchived: boolean;
 	}[];
 };
 

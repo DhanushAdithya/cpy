@@ -1,7 +1,16 @@
 import { createContext, ReactNode, useContext, useState } from "react";
+import { CpyContextType } from "~/types";
 import { trpc } from "~/utils/trpc";
 
-const CpyContext = createContext({});
+const CpyContext = createContext<CpyContextType>({
+	tagsList: { tags: [] },
+	cpysList: { cpys: [] },
+	cpysLoading: false,
+	tagsLoading: false,
+	cpysRefetch: () => {},
+	tagsRefetch: () => {},
+	setQuery: () => {},
+});
 
 export const useCpy = () => useContext(CpyContext);
 
@@ -14,9 +23,6 @@ const CpyContextProvider = ({ children }: { children: ReactNode }) => {
 		archive: false,
 	});
 
-	const [cpysList, setCpysList] = useState({ cpys: [] });
-	const [tagsList, setTagsList] = useState({ tags: [] });
-
 	const cpys = trpc.cpy.list.useQuery(query, {
 		refetchOnWindowFocus: false,
 	});
@@ -26,8 +32,8 @@ const CpyContextProvider = ({ children }: { children: ReactNode }) => {
 	});
 
 	const value = {
-		tagsList: tags.data,
-		cpysList: cpys.data,
+		tagsList: tags.data as CpyContextType["tagsList"],
+		cpysList: cpys.data as CpyContextType["cpysList"],
 		cpysLoading: cpys.isLoading,
 		tagsLoading: tags.isLoading,
 		cpysRefetch: cpys.refetch,

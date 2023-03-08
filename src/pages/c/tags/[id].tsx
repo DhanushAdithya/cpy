@@ -22,6 +22,7 @@ const Tag = () => {
 			{isLoading
 				? null
 				: data &&
+				  // @ts-ignore
 				  data.list.map(cpy => (
 						<CpyCard
 							id={cpy.id}
@@ -31,6 +32,7 @@ const Tag = () => {
 							isProtected={cpy.isprotected}
 							isArchived={cpy.isarchived}
 							isPublic={cpy.ispublic}
+							// @ts-ignore
 							tag={cpy.tags[0]}
 						/>
 				  ))}

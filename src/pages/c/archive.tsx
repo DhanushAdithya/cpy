@@ -9,6 +9,8 @@ const CpyArchive: NextPage = () => {
 	const { cpysList, cpysRefetch, cpysLoading, setQuery } = useCpy();
 
 	useEffect(() => {
+		cpysRefetch();
+		// @ts-ignore
 		setQuery(q => ({ ...q, archive: true }));
 	}, []);
 
@@ -27,6 +29,7 @@ const CpyArchive: NextPage = () => {
 								isProtected={cpy.isprotected}
 								isArchived={cpy.isarchived}
 								isPublic={cpy.ispublic}
+								// @ts-ignore
 								tag={cpy.tags[0]}
 							/>
 					  ))}

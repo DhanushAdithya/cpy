@@ -15,7 +15,13 @@ type Props = {
 	setShow: (show: any) => void;
 };
 
-const ModalContext = createContext({});
+const ModalContext = createContext<{
+	setShow: Function;
+	show: boolean;
+}>({
+	setShow: () => {},
+	show: false,
+});
 
 export const useModal = () => useContext(ModalContext);
 

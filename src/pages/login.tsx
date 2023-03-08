@@ -14,7 +14,7 @@ const Login: NextPage = () => {
 	});
 
 	useEffect(() => {
-		if (localStorage.getItem("cpy-token")) router.push("/c");
+		if (user) router.push("/c");
 	}, []);
 
 	const onSubmit = async (evt: FormEvent<HTMLFormElement>) => {
