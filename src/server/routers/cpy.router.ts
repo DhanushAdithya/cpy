@@ -101,7 +101,8 @@ export const cpyRouter = router({
 			return {
 				tags: !rows.length
 					? []
-					: rows[0].tags.reduce((acc, val) => {
+					: // @ts-ignore
+					  rows[0].tags.reduce((acc, val) => {
 							acc.push({
 								name: val,
 								id: Math.floor(Math.random() * 100),
