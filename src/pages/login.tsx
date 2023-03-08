@@ -5,7 +5,7 @@ import { useAuth } from "~/context";
 import { useRouter } from "next/router";
 
 const Login: NextPage = () => {
-	const { user, logIn } = useAuth();
+	const { logIn } = useAuth();
 	const router = useRouter();
 	const [loading, setLoading] = useState<boolean>(false);
 	const [form, setForm] = useState({
@@ -14,7 +14,7 @@ const Login: NextPage = () => {
 	});
 
 	useEffect(() => {
-		if (user) router.push("/c");
+		if (localStorage.getItem("cpy-token")) router.push("/c");
 	}, []);
 
 	const onSubmit = async (evt: FormEvent<HTMLFormElement>) => {
