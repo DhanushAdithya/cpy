@@ -80,8 +80,6 @@ export type SignUpState = {
 } & LoginState;
 
 export type User = {
-	// uid: string;
-	uid: number;
 	email: string;
 	uname: string;
 	name: string;
@@ -94,6 +92,7 @@ export type AuthResponse = {
 
 export type AuthContextType = {
 	user: User;
+	isAuthenticated: boolean;
 	signUp: (form: SignUpState) => Promise<AuthResponse>;
 	logIn: (form: LoginState) => Promise<AuthResponse>;
 	logOut: () => Promise<void>;

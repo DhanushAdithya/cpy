@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
-import type { FC } from "react";
+import type { FC, MouseEventHandler } from "react";
 import type { Icon } from "react-feather";
 
 type SidebarItemType = {
 	Icon: Icon;
 	text: string;
-	onClick?: () => void;
+	onClick?: MouseEventHandler<HTMLButtonElement>;
 };
 
 const SidebarItem: FC<SidebarItemType> = ({ Icon, text, onClick }) => {
