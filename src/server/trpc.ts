@@ -1,10 +1,11 @@
-import { initTRPC, TRPCError, type inferAsyncReturnType } from "@trpc/server";
-import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
-
 import jwt from "jsonwebtoken";
+import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
+import { initTRPC, TRPCError, inferAsyncReturnType } from "@trpc/server";
 
 export const createContext = async (opts: CreateNextContextOptions) => {
-	const token = opts.req.headers["x-token"] as string;
+	// console.log("trpc", opts.req.cookies["cpy-token"]);
+	// const token = opts.req.headers["x-token"] as string;
+	const token = opts.req.cookies["cpy-token"] as string;
 	return { token };
 };
 
