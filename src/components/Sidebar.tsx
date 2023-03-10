@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
 	Archive,
 	Folder,
@@ -11,8 +11,8 @@ import {
 	Plus,
 } from "react-feather";
 import { useAuth } from "~/context";
-import { useCpy } from "~/context/CpyContext";
 import { useSettings } from "~/context/SettingsContext";
+import { trpc } from "~/utils/trpc";
 import Portal from "./Portal";
 import SidebarItem from "./SidebarItem";
 import TagAdd from "./TagAdd";
@@ -22,14 +22,16 @@ const Sidebar = () => {
 	const { settings } = useSettings();
 	const router = useRouter();
 	const [show, setShow] = useState<boolean>(false);
-	const { tagsList, tagsLoading } = useCpy();
+	const { data, isLoading } = trpc.cpy.listTags.useQuery();
 
 	return (
 		<div className="cpy-sidebar">
 			<div>
-				<h1 className="text-3xl text-center hidden md:block font-display">
-					cpy
-				</h1>
+				<Link href="/c">
+					<h1 className="hidden md:flex items-center justify-center pb-1 text-2xl font-bold rounded-md text-black dark:text-white font-display text-center h-12 dark:bg-[#2b0d52] bg-[#d1e0d1]">
+						cpy
+					</h1>
+				</Link>
 			</div>
 			<div className="flex md:flex-col gap-px">
 				<Link href="/c">
@@ -43,14 +45,15 @@ const Sidebar = () => {
 			</div>
 			<div className="flex md:flex-col gap-px">
 				<div className="flex md:justify-between px-2 text-sm font-bold text-gray-500">
-					<h3 className="hidden md:block">Tags</h3>
+					<h3 className="hidden tags-text md:block">Tags</h3>
 					<button onClick={() => setShow(!show)}>
 						<Plus size={14} />
 					</button>
 				</div>
-				{tagsLoading
+				{isLoading
 					? null
-					: tagsList?.tags.map(tag => (
+					: // @ts-ignore
+					  data?.tags.map(tag => (
 							<Link href={`/c/tags/${tag.name}`} key={tag.id}>
 								<SidebarItem text={tag.name} Icon={Hash} />
 							</Link>
@@ -69,9 +72,9 @@ const Sidebar = () => {
 					<SidebarItem
 						text="Logout"
 						Icon={LogOut}
-						onClick={() => {
-							logOut();
-							router.push("/login");
+						onClick={e => {
+							e.preventDefault();
+							logOut().then(() => router.push("/login"));
 						}}
 					/>
 				</Link>

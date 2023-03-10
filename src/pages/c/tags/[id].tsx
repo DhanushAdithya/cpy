@@ -1,18 +1,19 @@
 import { useRouter } from "next/router";
 import { Layout } from "~/components";
 import CpyCard from "~/components/CpyCard";
-import { useCpy } from "~/context/CpyContext";
 import { trpc } from "~/utils/trpc";
 
 const Tag = () => {
 	const router = useRouter();
 	const { id } = router.query as { id: string };
-	const { tagsList, tagsLoading } = useCpy();
 
 	const { data, isLoading } = trpc.cpy.getTag.useQuery({ name: id });
+	const { data: tagsList, isLoading: tagsLoading } =
+		trpc.cpy.listTags.useQuery();
 
 	if (tagsLoading) return null;
 
+	// @ts-ignore
 	if (!tagsLoading && !tagsList.tags.map(tag => tag.name).includes(id)) {
 		router.push("/c");
 	}

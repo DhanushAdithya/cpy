@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { FormEvent, useState } from "react";
-import { useCpy } from "~/context/CpyContext";
 import E2EE from "~/lib/e2ee";
 import { trpc } from "~/utils/trpc";
 import { useModal } from "./Portal";
@@ -32,10 +31,11 @@ const CpyAdd = () => {
 		isArchived: false,
 	});
 
-	const { tagsList, tagsLoading, cpysRefetch } = useCpy();
+	const { data, isLoading } = trpc.cpy.listTags.useQuery();
+	const { refetch } = trpc.cpy.list.useQuery();
 	const { mutate } = trpc.cpy.create.useMutation({
 		onSuccess() {
-			cpysRefetch();
+			refetch();
 			setToast(true);
 			setLoading(false);
 			setTimeout(() => {
@@ -137,9 +137,10 @@ const CpyAdd = () => {
 				name="tag"
 			>
 				<option value="">No Tag</option>
-				{tagsLoading
+				{isLoading
 					? null
-					: tagsList?.tags.map(tag => (
+					: // @ts-ignore
+					  data?.tags.map(tag => (
 							<option value={tag.name} key={tag.id}>
 								{tag.name}
 							</option>

@@ -25,14 +25,16 @@ export const trpc = createTRPCNext<AppRouter>({
 				httpBatchLink({
 					url: `${getBaseUrl()}/api/trpc`,
 					headers() {
-						const token = localStorage.getItem("cpy-token") || "";
-						return { "x-token": token };
+						// const token = localStorage.getItem("cpy-token") || "";
+						// return { "x-token": token };
+						return {};
 					},
 				}),
 			],
 			queryClientConfig: {
 				defaultOptions: {
 					queries: {
+						retry: false,
 						staleTime: 60,
 					},
 				},

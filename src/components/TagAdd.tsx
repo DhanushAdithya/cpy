@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { FormEvent, useState } from "react";
-import { useCpy } from "~/context/CpyContext";
 import { trpc } from "~/utils/trpc";
 import Toast from "./Toast";
 
@@ -17,7 +16,7 @@ const TagAdd = ({ name, update = false }: TagProps) => {
 		? trpc.cpy.updateTag.useMutation()
 		: trpc.cpy.addTag.useMutation();
 
-	const { tagsRefetch } = useCpy();
+	const { refetch } = trpc.cpy.listTags.useQuery();
 
 	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -26,7 +25,7 @@ const TagAdd = ({ name, update = false }: TagProps) => {
 			{ name, tagName },
 			{
 				onSuccess() {
-					tagsRefetch();
+					refetch();
 					setToast(true);
 					setTimeout(() => {
 						setToast(false);
