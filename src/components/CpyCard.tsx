@@ -10,7 +10,6 @@ import {
 	Trash,
 	X,
 } from "react-feather";
-import { useCpy } from "~/context/CpyContext";
 import E2EE from "~/lib/e2ee";
 import { trpc } from "~/utils/trpc";
 import CpyEdit from "./CpyEdit";
@@ -24,6 +23,7 @@ const CpyCard = ({
 	isArchived,
 	tag,
 	isPublic,
+	others = false,
 }: {
 	name: string;
 	content: string;
@@ -32,6 +32,7 @@ const CpyCard = ({
 	isArchived: boolean;
 	tag: string;
 	isPublic: boolean;
+	others?: boolean;
 }) => {
 	const [toggle, setToggle] = useState(false);
 	const [copyIndicator, setCopyIndicator] = useState(false);
@@ -45,7 +46,7 @@ const CpyCard = ({
 		hide: { opacity: 0 },
 	};
 	const copyContent = () => {
-		if (!isProtected) {
+		if (!isProtected || others) {
 			navigator.clipboard.writeText(content);
 		} else {
 			const decr = new E2EE(E2EE.loadKeyFromLocalStorage());
@@ -55,15 +56,15 @@ const CpyCard = ({
 		setTimeout(() => setCopyIndicator(false), 1000);
 	};
 
-	const { cpysRefetch } = useCpy();
+	const { refetch } = trpc.cpy.list.useQuery({ archive: isArchived });
 	const { mutate } = trpc.cpy.delete.useMutation({
 		onSuccess() {
-			cpysRefetch();
+			refetch();
 		},
 	});
 	const { mutate: archiveMutate } = trpc.cpy.archive.useMutation({
 		onSuccess() {
-			cpysRefetch();
+			refetch();
 		},
 	});
 
@@ -121,25 +122,27 @@ const CpyCard = ({
 								{name}
 							</div>
 						</div>
-						<div>
-							<button
-								className="px-6 p-2 rounded bg-gray-400 dark:bg-[#2B0D52] select-none"
-								onClick={() => setToggle(!toggle)}
-							>
-								{toggle ? (
-									<X className="pointer-events-none" />
-								) : (
-									<MoreHorizontal className="pointer-events-none" />
-								)}
-							</button>
-						</div>
+						{!others && (
+							<div>
+								<button
+									className="px-6 p-2 rounded bg-gray-400 dark:bg-[#2B0D52] select-none"
+									onClick={() => setToggle(!toggle)}
+								>
+									{toggle ? (
+										<X className="pointer-events-none" />
+									) : (
+										<MoreHorizontal className="pointer-events-none" />
+									)}
+								</button>
+							</div>
+						)}
 					</motion.summary>
 					<div>
 						<div className="dark:bg-[#391666] bg-gray-400 rounded mt-3 p-3 text-sm">
 							{cpyContent}
 						</div>
 					</div>
-					{isProtected && (
+					{!others && isProtected && (
 						<div className="flex w-full justify-end mt-3">
 							<motion.button
 								onClick={showDecrypted}
@@ -151,35 +154,37 @@ const CpyCard = ({
 						</div>
 					)}
 				</motion.details>
-				<motion.div
-					variants={variants}
-					animate={toggle ? "show" : "hide"}
-					className={`${
-						!toggle ? "hidden" : ""
-					} transition absolute right-0 top-0 h-full flex justify-center items-center rounded-l-md`}
-				>
-					<motion.button
-						onClick={() => setShow(true)}
-						className="px-5 transition cursor-pointer h-full hover:bg-blue-600 bg-blue-500"
-						whileTap={{ scale: 0.95 }}
+				{!others && (
+					<motion.div
+						variants={variants}
+						animate={toggle ? "show" : "hide"}
+						className={`${
+							!toggle ? "hidden" : ""
+						} transition absolute right-0 top-0 h-full flex justify-center items-center rounded-l-md`}
 					>
-						<Edit />
-					</motion.button>
-					<motion.button
-						className="px-5 transition cursor-pointer h-full hover:bg-yellow-600 bg-yellow-500"
-						whileTap={{ scale: 0.95 }}
-						onClick={archiveCpy}
-					>
-						{!isArchived ? <Archive /> : <ExternalLink />}
-					</motion.button>
-					<motion.button
-						onClick={deleteCpy}
-						className="px-5 transition cursor-pointer rounded-r-md h-full hover:bg-red-600 bg-red-500"
-						whileTap={{ scale: 0.95 }}
-					>
-						<Trash />
-					</motion.button>
-				</motion.div>
+						<motion.button
+							onClick={() => setShow(true)}
+							className="px-5 transition cursor-pointer h-full hover:bg-blue-600 bg-blue-500"
+							whileTap={{ scale: 0.95 }}
+						>
+							<Edit />
+						</motion.button>
+						<motion.button
+							className="px-5 transition cursor-pointer h-full hover:bg-yellow-600 bg-yellow-500"
+							whileTap={{ scale: 0.95 }}
+							onClick={archiveCpy}
+						>
+							{!isArchived ? <Archive /> : <ExternalLink />}
+						</motion.button>
+						<motion.button
+							onClick={deleteCpy}
+							className="px-5 transition cursor-pointer rounded-r-md h-full hover:bg-red-600 bg-red-500"
+							whileTap={{ scale: 0.95 }}
+						>
+							<Trash />
+						</motion.button>
+					</motion.div>
+				)}
 			</motion.div>
 			{show && (
 				<Portal show={show} setShow={setShow}>
