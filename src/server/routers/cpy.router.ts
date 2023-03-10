@@ -175,4 +175,26 @@ export const cpyRouter = router({
 				[uid, input.name, input.tagName]
 			);
 		}),
+	cpysWithUsername: procedure
+		.input(
+			z.object({
+				uname: z.string(),
+			})
+		)
+		.query(async ({ input }) => {
+			const { uname } = input;
+			try {
+				const { rows } = await conn.query(
+					"SELECT * FROM cpys WHERE userid = (SELECT id FROM users WHERE uname = $1) AND ispublic = 't' AND isarchived = 'f'",
+					[uname]
+				);
+				console.log(rows);
+				return { cpys: rows };
+			} catch (err) {
+				return { cpys: true };
+			}
+		}),
+	checkUser: procedure.query(async () => {
+		return { isAuthenticated: true };
+	}),
 });

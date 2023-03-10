@@ -3,9 +3,10 @@ import { type ChangeEvent, type FormEvent, useEffect, useState } from "react";
 import { Nav, L, ThemeToggle } from "~/components";
 import { useAuth } from "~/context";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 const Login: NextPage = () => {
-	const { logIn } = useAuth();
+	const { logIn, isAuthenticated } = useAuth();
 	const router = useRouter();
 	const [loading, setLoading] = useState<boolean>(false);
 	const [form, setForm] = useState({
@@ -14,16 +15,16 @@ const Login: NextPage = () => {
 	});
 
 	useEffect(() => {
-		if (localStorage.getItem("cpy-token")) router.push("/c");
-	}, []);
+		if (isAuthenticated) router.push("/c");
+	}, [isAuthenticated]);
 
 	const onSubmit = async (evt: FormEvent<HTMLFormElement>) => {
 		evt.preventDefault();
 		setLoading(true);
 
-		const { error, message } = await logIn(form);
+		const { error } = await logIn(form);
 		if (!error) {
-			localStorage.setItem("cpy-token", message);
+			// localStorage.setItem("cpy-token", message);
 			router.push("/c");
 		}
 		setLoading(false);
@@ -70,6 +71,13 @@ const Login: NextPage = () => {
 						)}
 						Log In
 					</button>
+					<span>
+						New User? Create an account{" "}
+						<Link href="/signup" className="font-bold text-purple-700">
+							here
+						</Link>
+						!
+					</span>
 				</form>
 				<ThemeToggle />
 			</L>

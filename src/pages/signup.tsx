@@ -4,9 +4,10 @@ import { Nav, ThemeToggle } from "~/components";
 import { useAuth } from "~/context";
 import { useRouter } from "next/router";
 import HomeLayout from "~/components/HomeLayout";
+import Link from "next/link";
 
 const Signup: NextPage = () => {
-	const { signUp } = useAuth();
+	const { signUp, isAuthenticated } = useAuth();
 	const router = useRouter();
 	const [loading, setLoading] = useState<boolean>(false);
 	const [form, setForm] = useState({
@@ -17,8 +18,8 @@ const Signup: NextPage = () => {
 	});
 
 	useEffect(() => {
-		if (localStorage.getItem("cpy-token")) router.push("/c");
-	}, []);
+		if (isAuthenticated) router.push("/c");
+	}, [isAuthenticated]);
 
 	const onSubmit = async (evt: FormEvent<HTMLFormElement>) => {
 		evt.preventDefault();
@@ -87,6 +88,13 @@ const Signup: NextPage = () => {
 					)}
 					Sign Up
 				</button>
+				<span>
+					Already have an account?{" "}
+					<Link href="/login" className="font-bold text-purple-700">
+						Login
+					</Link>{" "}
+					instead!
+				</span>
 			</form>
 			<ThemeToggle />
 		</HomeLayout>
