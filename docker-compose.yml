@@ -11,14 +11,9 @@ services:
       volumes:
          - postgres-data:/var/lib/postgresql/data
    app:
-      build:
-         context: .
+      build: ./
       environment:
-         PGUSER: ${PGUSER}
-         PGHOST: ${PGHOST}
-         PGPORT: ${PGPORT}
-         PGDATABASE: ${PGDATABASE}
-         PGPASSWORD: ${PGPASSWORD}
+         PGHOST: "postgres"
       ports:
          - "3000:3000"
       depends_on:
