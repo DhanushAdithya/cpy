@@ -35,9 +35,15 @@ export default async function handler(
 		if (result.rows.length) {
 			const user = result.rows[0];
 			const passMatch = await bcrypt.compare(password, user.password);
-			if (!passMatch) res.json({ error: true, message: "Wrong Password" });
+			if (!passMatch) {
+				res.json({ error: true, message: "Wrong Password" });
+				return;
+			}
 			const { token, error } = signJWT(user.id);
-			if (error) res.json({ error: true, message: error });
+			if (error) {
+				res.json({ error: true, message: error });
+				return;
+			}
 			setCookie(res, "cpy-token", token, {
 				path: "/",
 				maxAge: 86400,
@@ -51,6 +57,7 @@ export default async function handler(
 					email: user.email,
 				},
 			});
+			return;
 		}
 		res.json({ error: true, message: "No User Found" });
 	} catch (err) {
