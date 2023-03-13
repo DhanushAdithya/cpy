@@ -17,12 +17,15 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [isAuthenticated, setAuth] = useState<boolean>(false);
 	const { mutateAsync: signupMutate } = trpc.user.signup.useMutation();
-	const { isLoading, isError, failureReason } = trpc.cpy.checkUser.useQuery(undefined, {
-        retry: false,
-        refetchOnWindowFocus: false,
-        refetchOnMount: false,
-        refetchOnReconnect: false,
-    });
+	const { isLoading, isError, failureReason } = trpc.cpy.checkUser.useQuery(
+		undefined,
+		{
+			retry: false,
+			refetchOnWindowFocus: false,
+			refetchOnMount: false,
+			refetchOnReconnect: false,
+		}
+	);
 
 	useEffect(() => {
 		if (!isLoading && isError && failureReason?.data?.httpStatus === 401) {

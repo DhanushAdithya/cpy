@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const Footer = () => {
 	return (
-		<footer className="font-dmserif dark:text-white flex justify-between p-8 items-center">
+		<footer className="font-dmserif mr-auto dark:text-white flex justify-between p-8 items-center">
 			<ul className="flex gap-4">
 				<li className="text-xl">
 					<Link href="/login">chrome</Link>

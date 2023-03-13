@@ -65,6 +65,8 @@ body {
 .landing-nav {
 	height: 110px;
 	padding: 0 40px;
+
+	@apply w-full;
 }
 
 .divider {

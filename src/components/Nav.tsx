@@ -8,7 +8,11 @@ type Props = {
 const Nav = (props: Props) => {
 	const { isAuthenticated } = useAuth();
 	return (
-		<nav className={`font-dmserif dark:text-white flex ${props.form ? "justify-center md:" : "" }justify-between landing-nav items-center`}>
+		<nav
+			className={`font-dmserif dark:text-white flex ${
+				props.form ? "justify-center md:" : ""
+			}justify-between landing-nav items-center`}
+		>
 			<h1 className={`text-5xl ${props.form ? "mb-5" : ""} md:mt-[-2px]`}>
 				<Link href="/">cpy</Link>
 			</h1>
