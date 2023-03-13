@@ -22,8 +22,8 @@ module.exports = {
 				"font-light": "#000000",
 			},
 			backgroundImage: {
-				"blob-light": "url('../assests/bg-light.svg')",
-				"blob-dark": "url('../assests/bg.svg')",
+				"blob-light": "url('/bg-light.svg')",
+				"blob-dark": "url('/bg.svg')",
 			},
 		},
 	},

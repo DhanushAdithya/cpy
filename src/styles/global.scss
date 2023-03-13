@@ -32,10 +32,9 @@ details > summary::-webkit-details-marker /* Safari */ {
 }
 
 #home {
-	background: url("../assests/bg.svg");
+	background: url("/bg.svg");
 	background-repeat: no-repeat;
 	background-size: fill;
-	// background-position: center center;
 	background-position: 35% 10%;
 }
 
