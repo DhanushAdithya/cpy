@@ -6,10 +6,10 @@ type Props = {
 };
 
 const Nav = (props: Props) => {
-	const { user } = useAuth();
+	const { isAuthenticated } = useAuth();
 	return (
-		<nav className="font-dmserif dark:text-white flex justify-between landing-nav items-center">
-			<h1 className="text-5xl mt-[-2px]">
+		<nav className={`font-dmserif dark:text-white flex ${props.form ? "justify-center md:" : "" }justify-between landing-nav items-center`}>
+			<h1 className={`text-5xl ${props.form ? "mb-5" : ""} md:mt-[-2px]`}>
 				<Link href="/">cpy</Link>
 			</h1>
 			{!props.form && (
@@ -19,7 +19,7 @@ const Nav = (props: Props) => {
                             <Link href="/features">features</Link>
                         </li>
                     */}
-					{user ? (
+					{isAuthenticated ? (
 						<li className="text-xl">
 							<Link href="/c">your cpys</Link>
 						</li>
